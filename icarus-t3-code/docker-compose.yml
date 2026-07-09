@@ -14,11 +14,30 @@ services:
       PROXY_AUTH_WHITELIST: "/*"
       PROXY_AUTH_BLACKLIST: "/umbrel-setup*"
 
+  # Routes /umbrel-setup to the pairing helper and everything else to T3 Code.
+  # The config is written inline instead of bind-mounted so app updates can
+  # change it; Umbrel only seeds ${APP_DATA_DIR} on first install.
   gateway:
     image: caddy:2-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
     restart: on-failure
-    volumes:
-      - ${APP_DATA_DIR}/data/gateway/Caddyfile:/etc/caddy/Caddyfile:ro
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        cat > /etc/caddy/Caddyfile <<'EOF'
+        {
+        	admin off
+        	auto_https off
+        }
+        :8080 {
+        	handle /umbrel-setup* {
+        		reverse_proxy icarus-t3-code_helper_1:3999
+        	}
+        	handle {
+        		reverse_proxy icarus-t3-code_server_1:3773
+        	}
+        }
+        EOF
+        exec caddy run --config /etc/caddy/Caddyfile
 
   server:
     image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:9ee4a4be26badcfc135d5ed492293136a4072f0340ef8474d082b66eb9119780
@@ -29,6 +48,8 @@ services:
     environment:
       T3CODE_PORT: 3773
 
+  # Mints a one-time pairing token and redirects the browser into T3 Code.
+  # Reachable only through the Umbrel-authenticated /umbrel-setup path.
   helper:
     image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:9ee4a4be26badcfc135d5ed492293136a4072f0340ef8474d082b66eb9119780
     restart: on-failure
@@ -36,7 +57,6 @@ services:
     entrypoint: ["node", "/gateway/setup-server.mjs"]
     volumes:
       - ${APP_DATA_DIR}/data:/data
-      - ${APP_DATA_DIR}/data/gateway/setup-server.mjs:/gateway/setup-server.mjs:ro
     environment:
       HOME: /data/home
       T3CODE_HOME: /data/home/.t3

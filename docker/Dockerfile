@@ -35,6 +35,10 @@ RUN apt-get purge -y python3 make g++ 2>/dev/null; apt-get autoremove -y 2>/dev/
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+# Baked in rather than bind-mounted from the app data dir: Umbrel only seeds
+# an app's data dir on first install, so a mounted copy could never be updated.
+COPY setup-server.mjs /gateway/setup-server.mjs
+
 # All mutable state (t3 base dir, provider auth, repos) lives under /data,
 # which Umbrel bind-mounts from ${APP_DATA_DIR}/data.
 ENV HOME=/data/home \
