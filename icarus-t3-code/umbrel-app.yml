@@ -1,0 +1,35 @@
+manifestVersion: 1
+id: icarus-t3-code
+name: T3 Code
+tagline: Web GUI for coding agents - your Umbrel as a cloud workstation
+icon: https://raw.githubusercontent.com/pingdotgg/t3code/main/favicon.svg
+category: Development
+version: "0.0.28"
+port: 3773
+description: >-
+  T3 Code is a minimal web GUI for coding agents (Codex, Claude Code, Cursor,
+  and OpenCode). This package runs the T3 Code server on your Umbrel so your
+  repositories, git state, terminals, and agent sessions live on the server
+  and are reachable from any device with a browser.
+
+  First run: open the app, then paste the one-time pairing token printed in
+  the app logs (Settings -> Troubleshoot -> T3 Code logs). After pairing,
+  open a terminal inside T3 Code and log in to your providers, for example
+  `claude auth login`, `codex login`, or `opencode auth login`. Auth state
+  persists in the app's data directory.
+
+  Repositories live under /data/home/projects inside the app. Clone with the
+  built-in terminal and add the folder as a project in the sidebar.
+developer: T3 Tools (packaged by TheIcarusWings)
+website: https://t3.gg
+submitter: TheIcarusWings
+submission: https://github.com/TheIcarusWings/t3code-umbrel
+repo: https://github.com/TheIcarusWings/t3code-umbrel
+support: https://github.com/TheIcarusWings/t3code-umbrel/issues
+gallery: []
+releaseNotes: >-
+  Initial packaging of T3 Code 0.0.28 for Umbrel.
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""

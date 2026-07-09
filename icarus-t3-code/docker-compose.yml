@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: icarus-t3-code_server_1
+      APP_PORT: 3773
+      # T3 Code has its own auth: binding to a non-loopback host forces its
+      # one-time-token pairing flow, and every native T3 client (desktop,
+      # mobile, hosted web) must reach the WebSocket endpoint directly, which
+      # Umbrel's session-cookie auth wrapper would block.
+      PROXY_AUTH_ADD: "false"
+
+  server:
+    image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28
+    restart: on-failure
+    stop_grace_period: 30s
+    volumes:
+      - ${APP_DATA_DIR}/data:/data
+    environment:
+      T3CODE_PORT: 3773
