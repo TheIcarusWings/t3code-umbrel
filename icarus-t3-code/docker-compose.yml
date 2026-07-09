@@ -48,8 +48,10 @@ services:
     environment:
       T3CODE_PORT: 3773
 
-  # Mints a one-time pairing token and redirects the browser into T3 Code.
-  # Reachable only through the Umbrel-authenticated /umbrel-setup path.
+  # Serves the /umbrel-setup connect page. Mints a one-time pairing token only
+  # for a caller that presents APP_PASSWORD, then redirects into T3 Code. This
+  # container is directly reachable by any app on the shared docker network, so
+  # the password check - not network position - is what protects it.
   helper:
     image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:b281c4430235a660a30b6d2411a4341859283639aa3ede121edf3aa7e2de5340
     restart: on-failure
