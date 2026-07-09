@@ -10,7 +10,11 @@ A community app store that runs the [T3 Code](https://github.com/pingdotgg/t3cod
 
 ## First run
 
-Click **Open** on the app tile. That's it - you land in T3 Code already paired. No tokens to copy.
+1. On the T3 Code page in your Umbrel dashboard, copy the **app password** shown in the credentials box.
+2. Click **Open**. You land on a small "Connect this device" page.
+3. Paste the password and continue - you are now paired.
+
+Pairing persists per browser, so this is a one-time step per device.
 
 Then open a terminal inside T3 Code and authenticate the providers you use:
 
@@ -22,16 +26,16 @@ Repositories live under `~/projects` inside the app. Create a project from the s
 
 Provider auth, T3 state, and repos all persist in the app's data directory, so they survive updates and restarts.
 
-## How one-click pairing works
+## How pairing works, and why it needs the password
 
-T3 Code requires a one-time pairing token whenever it is bound to a non-loopback address. Rather than making you copy that token out of the app logs, this package adds two small services:
+T3 Code requires a one-time pairing token whenever it is bound to a non-loopback address (which it always is here). This package adds two small services:
 
-- a **gateway** (Caddy) that fronts the app
-- a **helper** that mints a fresh short-lived pairing token via `t3 auth pairing create` and redirects your browser to T3 Code's own `/pair` page
+- a **gateway** (Caddy) that fronts the app and routes `/umbrel-setup` to the helper, everything else to T3 Code
+- a **helper** that mints a short-lived pairing token via `t3 auth pairing create` and redirects your browser into T3 Code's `/pair` page
 
-The helper is exposed only at `/umbrel-setup`, and that single path is protected by Umbrel's own dashboard authentication (`PROXY_AUTH_BLACKLIST`). So only someone already logged into your Umbrel can mint a token. Everything else bypasses Umbrel's auth wrapper, because T3 Code enforces its own auth and its native clients need direct WebSocket access.
+The helper mints a token **only for a caller that presents the app password**. That check matters because of how Umbrel networking works: every installed app shares one flat Docker network with inter-container traffic enabled, so any co-installed app can reach this helper directly and bypass Umbrel's dashboard login. Umbrel's proxy also strips its session cookie before forwarding, so the helper cannot verify your Umbrel session. The only secret a malicious peer app cannot know is `APP_PASSWORD` - Umbrel derives it per-install and injects it only into this app's own containers, and shows it to you on the app page. So the password, not network position, is what protects pairing.
 
-To pair a phone or another device, open the app from the Umbrel dashboard on that device. To pair a native T3 client, run `t3 auth pairing create` from a terminal inside T3 Code.
+To pair a phone or another device, open the app there and paste the same password. To pair a native T3 client (desktop/mobile app), run `t3 auth pairing create` from a terminal inside T3 Code.
 
 ## Remote access (outside your LAN)
 
@@ -41,7 +45,7 @@ Do not port-forward this app to the public internet.
 
 ## Security notes
 
-- Only the `/umbrel-setup` path can mint pairing tokens, and it requires an Umbrel dashboard session. Tokens are single-use and expire in 10 minutes.
+- Minting a pairing token requires the app password (a high-entropy per-install secret only this app's containers hold). Tokens are single-use and expire in 10 minutes.
 - Anyone with admin access to the Umbrel effectively has your provider sessions, since provider auth is stored in the app's data directory.
 - Revoke sessions with `t3 auth session revoke` from a terminal inside the app.
 
