@@ -60,3 +60,7 @@ services:
     environment:
       HOME: /data/home
       T3CODE_HOME: /data/home/.t3
+      # Peer-unforgeable per-install secret. The helper mints a pairing token
+      # only for a caller that presents it, so a malicious co-installed app
+      # reaching this container directly on the shared network cannot pair.
+      APP_PASSWORD: ${APP_PASSWORD}

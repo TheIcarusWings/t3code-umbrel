@@ -4,7 +4,7 @@ name: T3 Code
 tagline: Web GUI for coding agents - your Umbrel as a cloud workstation
 icon: https://raw.githubusercontent.com/pingdotgg/t3code/main/favicon.svg
 category: Development
-version: "0.0.28.1"
+version: "0.0.28.2"
 port: 3773
 description: >-
   T3 Code is a minimal web GUI for coding agents (Codex, Claude Code, Cursor,
@@ -12,10 +12,10 @@ description: >-
   repositories, git state, terminals, and agent sessions live on the server
   and are reachable from any device with a browser.
 
-  Setup is one click: opening the app from the Umbrel dashboard pairs your
-  browser automatically. To pair a phone or another device, open the app from
-  the dashboard on that device, or create a token from a terminal inside
-  T3 Code with `t3 auth pairing create`.
+  To connect a device: open the app, then paste this app's password (shown on
+  this page in your Umbrel dashboard) to pair. Pairing persists per browser, so
+  it is a one-time step per device. To pair a native T3 client, run
+  `t3 auth pairing create` from a terminal inside T3 Code.
 
   After pairing, open a terminal inside T3 Code and log in to your providers,
   for example `claude auth login`, `codex login`, or `opencode auth login`.
@@ -32,9 +32,10 @@ support: https://github.com/TheIcarusWings/t3code-umbrel/issues
 gallery: []
 path: "/umbrel-setup"
 releaseNotes: >-
-  One-click pairing: opening the app from the Umbrel dashboard now pairs your
-  browser automatically (no more copying tokens from logs). Fixes project
-  creation failing with "Failed to create workspace root".
+  Security fix: pairing now requires this app's password (shown on the app
+  page) instead of minting tokens for any caller. On Umbrel's shared network a
+  malicious co-installed app could otherwise have paired itself. Paste the
+  password once per device to connect.
 dependencies: []
+deterministicPassword: true
 defaultUsername: ""
-defaultPassword: ""
