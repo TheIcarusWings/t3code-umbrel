@@ -21,7 +21,7 @@ services:
       - ${APP_DATA_DIR}/data/gateway/Caddyfile:/etc/caddy/Caddyfile:ro
 
   server:
-    image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:eb1e6e52fdf261b2e6f9309ac6dc1d8ccfd97fd879dc01613abab9e84f76e57e
+    image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:9ee4a4be26badcfc135d5ed492293136a4072f0340ef8474d082b66eb9119780
     restart: on-failure
     stop_grace_period: 30s
     volumes:
@@ -30,7 +30,7 @@ services:
       T3CODE_PORT: 3773
 
   helper:
-    image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:eb1e6e52fdf261b2e6f9309ac6dc1d8ccfd97fd879dc01613abab9e84f76e57e
+    image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:9ee4a4be26badcfc135d5ed492293136a4072f0340ef8474d082b66eb9119780
     restart: on-failure
     user: "1000:1000"
     entrypoint: ["node", "/gateway/setup-server.mjs"]
