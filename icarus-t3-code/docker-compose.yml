@@ -12,7 +12,7 @@ services:
       PROXY_AUTH_ADD: "false"
 
   server:
-    image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28
+    image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:eb1e6e52fdf261b2e6f9309ac6dc1d8ccfd97fd879dc01613abab9e84f76e57e
     restart: on-failure
     stop_grace_period: 30s
     volumes:
