@@ -40,7 +40,7 @@ services:
         exec caddy run --config /etc/caddy/Caddyfile
 
   server:
-    image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:ba46147ed09212adc5e925e4af1169717b7ec7a693715bb473d7e8d9de1486a4
+    image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:b281c4430235a660a30b6d2411a4341859283639aa3ede121edf3aa7e2de5340
     restart: on-failure
     stop_grace_period: 30s
     volumes:
@@ -51,7 +51,7 @@ services:
   # Mints a one-time pairing token and redirects the browser into T3 Code.
   # Reachable only through the Umbrel-authenticated /umbrel-setup path.
   helper:
-    image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:ba46147ed09212adc5e925e4af1169717b7ec7a693715bb473d7e8d9de1486a4
+    image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:b281c4430235a660a30b6d2411a4341859283639aa3ede121edf3aa7e2de5340
     restart: on-failure
     user: "1000:1000"
     entrypoint: ["node", "/gateway/setup-server.mjs"]
