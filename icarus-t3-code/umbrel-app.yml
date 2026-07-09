@@ -4,7 +4,7 @@ name: T3 Code
 tagline: Web GUI for coding agents - your Umbrel as a cloud workstation
 icon: https://raw.githubusercontent.com/pingdotgg/t3code/main/favicon.svg
 category: Development
-version: "0.0.28"
+version: "0.0.28.1"
 port: 3773
 description: >-
   T3 Code is a minimal web GUI for coding agents (Codex, Claude Code, Cursor,
@@ -12,14 +12,17 @@ description: >-
   repositories, git state, terminals, and agent sessions live on the server
   and are reachable from any device with a browser.
 
-  First run: open the app, then paste the one-time pairing token printed in
-  the app logs (Settings -> Troubleshoot -> T3 Code logs). After pairing,
-  open a terminal inside T3 Code and log in to your providers, for example
-  `claude auth login`, `codex login`, or `opencode auth login`. Auth state
-  persists in the app's data directory.
+  Setup is one click: opening the app from the Umbrel dashboard pairs your
+  browser automatically. To pair a phone or another device, open the app from
+  the dashboard on that device, or create a token from a terminal inside
+  T3 Code with `t3 auth pairing create`.
 
-  Repositories live under /data/home/projects inside the app. Clone with the
-  built-in terminal and add the folder as a project in the sidebar.
+  After pairing, open a terminal inside T3 Code and log in to your providers,
+  for example `claude auth login`, `codex login`, or `opencode auth login`.
+  Auth state persists in the app's data directory.
+
+  Repositories live under ~/projects inside the app. Clone with the built-in
+  terminal or create projects from the sidebar.
 developer: T3 Tools (packaged by TheIcarusWings)
 website: https://t3.gg
 submitter: TheIcarusWings
@@ -27,9 +30,11 @@ submission: https://github.com/TheIcarusWings/t3code-umbrel
 repo: https://github.com/TheIcarusWings/t3code-umbrel
 support: https://github.com/TheIcarusWings/t3code-umbrel/issues
 gallery: []
+path: "/umbrel-setup"
 releaseNotes: >-
-  Initial packaging of T3 Code 0.0.28 for Umbrel.
+  One-click pairing: opening the app from the Umbrel dashboard now pairs your
+  browser automatically (no more copying tokens from logs). Fixes project
+  creation failing with "Failed to create workspace root".
 dependencies: []
-path: ""
 defaultUsername: ""
 defaultPassword: ""

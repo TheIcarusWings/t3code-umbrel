@@ -3,13 +3,22 @@ version: "3.7"
 services:
   app_proxy:
     environment:
-      APP_HOST: icarus-t3-code_server_1
-      APP_PORT: 3773
-      # T3 Code has its own auth: binding to a non-loopback host forces its
-      # one-time-token pairing flow, and every native T3 client (desktop,
-      # mobile, hosted web) must reach the WebSocket endpoint directly, which
-      # Umbrel's session-cookie auth wrapper would block.
-      PROXY_AUTH_ADD: "false"
+      APP_HOST: icarus-t3-code_gateway_1
+      APP_PORT: 8080
+      # T3 Code has its own auth (one-time-token pairing, forced whenever it
+      # binds a non-loopback host), and native T3 clients need direct
+      # WebSocket access, so Umbrel's session auth stays off for the app
+      # itself. The one exception is /umbrel-setup: it mints pairing tokens,
+      # so it must only be reachable with an Umbrel dashboard session.
+      PROXY_AUTH_ADD: "true"
+      PROXY_AUTH_WHITELIST: "/*"
+      PROXY_AUTH_BLACKLIST: "/umbrel-setup*"
+
+  gateway:
+    image: caddy:2-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+    restart: on-failure
+    volumes:
+      - ${APP_DATA_DIR}/data/gateway/Caddyfile:/etc/caddy/Caddyfile:ro
 
   server:
     image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:eb1e6e52fdf261b2e6f9309ac6dc1d8ccfd97fd879dc01613abab9e84f76e57e
@@ -19,3 +28,15 @@ services:
       - ${APP_DATA_DIR}/data:/data
     environment:
       T3CODE_PORT: 3773
+
+  helper:
+    image: ghcr.io/theicaruswings/t3code-umbrel:0.0.28@sha256:eb1e6e52fdf261b2e6f9309ac6dc1d8ccfd97fd879dc01613abab9e84f76e57e
+    restart: on-failure
+    user: "1000:1000"
+    entrypoint: ["node", "/gateway/setup-server.mjs"]
+    volumes:
+      - ${APP_DATA_DIR}/data:/data
+      - ${APP_DATA_DIR}/data/gateway/setup-server.mjs:/gateway/setup-server.mjs:ro
+    environment:
+      HOME: /data/home
+      T3CODE_HOME: /data/home/.t3

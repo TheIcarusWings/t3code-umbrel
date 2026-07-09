@@ -1,0 +1,13 @@
+{
+	admin off
+	auto_https off
+}
+
+:8080 {
+	handle /umbrel-setup* {
+		reverse_proxy icarus-t3-code_helper_1:3999
+	}
+	handle {
+		reverse_proxy icarus-t3-code_server_1:3773
+	}
+}

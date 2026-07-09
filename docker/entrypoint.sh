@@ -6,14 +6,16 @@ set -eu
 # ...), and the repos themselves.
 mkdir -p /data/home/projects
 
-# Umbrel creates the bind-mount dirs as root; t3 and the provider CLIs run as
-# the unprivileged node user. Only chown when ownership is wrong so restarts
-# with large repos don't pay a recursive chown every time.
+# Umbrel may create the bind-mount dirs as root or as uid 1000 depending on
+# install path; t3 and the provider CLIs run as the unprivileged node user.
+# Recursive chown only when the tree root is wrong (restarts with large repos
+# must not pay a recursive chown every time), but always fix the dirs this
+# script itself just created as root.
 if [ "$(id -u)" = "0" ]; then
-  owner="$(stat -c '%u' /data/home)"
-  if [ "$owner" != "1000" ]; then
+  if [ "$(stat -c '%u' /data/home)" != "1000" ]; then
     chown -R node:node /data
   fi
+  chown node:node /data /data/home /data/home/projects
   exec setpriv --reuid node --regid node --init-groups \
     env HOME=/data/home T3CODE_HOME=/data/home/.t3 \
     t3 serve --host 0.0.0.0 --port "${T3CODE_PORT:-3773}" /data/home/projects
